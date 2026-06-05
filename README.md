@@ -62,7 +62,9 @@ just two bits because it will always be one of the four general purpose register
 When an instruction takes on register and one immediate/address then the operand B is
 treated as a single byte (only low) or word (low and high), when an instruction takes two
 registers as arguments, then the low byte of B is interpreted as a register (with padding) and
-the high byte is discarded. The encoding is as follows
+the high byte is discarded.
+
+The first bit of the opcode signals whether the instruction has register-register arguments.
 
 | Register | Bits |
 |-|-|
@@ -77,54 +79,54 @@ Data movement:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| LOADI | ??? | reg | imm16  | ??? | loads B to A | ??? |
-| LOAD  | ??? | reg | addr16 | ??? | loads B to A | ??? |
-| STORE | ??? | reg | addr16 | ??? | store A to addr B | ??? |
-| MOVE  | ??? | reg | reg  | ??? | moves content of A to B | ??? |
+| LOADI | 0b000001 | reg | imm16  | ??? | loads B to A | ??? |
+| LOAD  | 0b000010 | reg | addr16 | ??? | loads B to A | ??? |
+| STORE | 0b000011 | reg | addr16 | ??? | store A to addr B | ??? |
+| MOVE  | 0b100100 | reg | reg  | ??? | moves content of A to B | ??? |
 
 Arithmetic:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| ADDI | ??? | reg | imm8 | ??? | adds B to A | ??? |
-| ADDR | ??? | reg | reg  | ??? | adds B to A | ??? |
-| SUBI | ??? | reg | imm8 | ??? | subtracts B from A | ??? |
-| SUBR | ??? | reg | reg  | ??? | subtracts B from A | ??? |
-| INC  | ??? | reg |      | ??? | increments A | ??? |
-| DEC  | ??? | reg |      | ??? | decrements A | ??? |
+| ADDI | 0b000101 | reg | imm8 | ??? | adds B to A | ??? |
+| ADDR | 0b100110 | reg | reg  | ??? | adds B to A | ??? |
+| SUBI | 0b000111 | reg | imm8 | ??? | subtracts B from A | ??? |
+| SUBR | 0b101000 | reg | reg  | ??? | subtracts B from A | ??? |
+| INC  | 0b001001 | reg |      | ??? | increments A | ??? |
+| DEC  | 0b001010 | reg |      | ??? | decrements A | ??? |
 
 Logic:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| AND | ??? | reg | reg | ??? | A & B | ??? |
-| OR  | ??? | reg | reg | ??? | A \| B | ??? |
-| XOR | ??? | reg | reg | ??? | A ^ B | ??? |
-| NOT | ??? | reg |     | ??? | sets A to ~B | ??? |
+| AND | 0b101011 | reg | reg | ??? | A & B | ??? |
+| OR  | 0b101100 | reg | reg | ??? | A \| B | ??? |
+| XOR | 0b101101 | reg | reg | ??? | A ^ B | ??? |
+| NOT | 0b001110 | reg |     | ??? | sets A to ~B | ??? |
 
 Comparison:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| CMPR | ??? | reg | reg   | ??? | sets flags from A-B | ??? |
-| CMPI | ??? | reg | imm8  | ??? | sets flags from A-B | ??? |
-| CMPA | ??? | reg | add16 | ??? | sets flags from A-B | ??? |
+| CMPR | 0b101111 | reg | reg   | ??? | sets flags from A-B | ??? |
+| CMPI | 0b010000 | reg | imm8  | ??? | sets flags from A-B | ??? |
+| CMPA | 0b010001 | reg | add16 | ??? | sets flags from A-B | ??? |
 
 Control flow:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| JMP  | ??? | reg | addr16 | ??? | sets PC to B | ??? |
-| JZ   | ??? |     | addr16 | ??? | sets PC to B if Z=1 (i.e. if zero flag is true) | ??? |
-| JNZ  | ??? |     | addr16 | ??? | sets PC to B if Z=0 (i.e. if zero flag is false) | ??? |
-| JC   | ??? |     | addr16 | ??? | sets PC to B if C=1 (i.e. if carry flag is true) | ??? |
-| JN   | ??? |     | addr16 | ??? | sets PC to B if N=1 (i.e. if negative flag is true) | ??? |
-| CALL | ??? | ??? | ???    | ??? | ??? | ??? |
-| RET  | ??? | ??? | ???    | ??? | ??? | ??? |
+| JMP  | 0b010010 | reg | addr16 | ??? | sets PC to B | ??? |
+| JZ   | 0b010011 |     | addr16 | ??? | sets PC to B if Z=1 (i.e. if zero flag is true) | ??? |
+| JNZ  | 0b010100 |     | addr16 | ??? | sets PC to B if Z=0 (i.e. if zero flag is false) | ??? |
+| JC   | 0b010101 |     | addr16 | ??? | sets PC to B if C=1 (i.e. if carry flag is true) | ??? |
+| JN   | 0b010110 |     | addr16 | ??? | sets PC to B if N=1 (i.e. if negative flag is true) | ??? |
+| CALL | 0b010111 | ??? | ???    | ??? | ??? | ??? |
+| RET  | 0b011000 | ??? | ???    | ??? | ??? | ??? |
 
 System:
 
 | Mnemonic | Opcode | A | B | Cycles | Description | Flags |
 |-|-|-|-|-|-|-|
-| NOP  | ??? | | | ??? | no operation | ??? |
-| HALT | ??? | | | ??? | halts execution | ??? |
+| NOP  | 0b011001 | | | ??? | no operation | ??? |
+| HALT | 0b011010 | | | ??? | halts execution | ??? |
